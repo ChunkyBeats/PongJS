@@ -1,12 +1,14 @@
 const PADDLE_HEIGHT = 100;
 const PADDLE_WIDTH = 10;
 const WIN_SCORE = 10;
+const INITIAL_CHAOS_COUNT = 1;
 var canvas;
 var canvasContext;
 var ballX = 400;
 var ballY = 300;
 var ballSpeedX = randomBallDirection();
 var ballSpeedY = randomBallDirection();
+var chaosCount = INITIAL_CHAOS_COUNT;
 
 var paddle1Y = 250;
 var paddle2Y = 250;
@@ -36,6 +38,11 @@ function handleMouseClick(e) {
   }
 }
 
+function handleMouseMovement(e) {
+  var mousePos = calculateMousePosition(e);
+  paddle1Y = mousePos.y - (PADDLE_HEIGHT/2);
+}
+
 window.onload = function() {
   canvas = document.getElementById('gameCanvas');
   canvasContext = canvas.getContext('2d');
@@ -48,16 +55,15 @@ window.onload = function() {
 
   canvas.addEventListener('mousedown', handleMouseClick);
 
-  canvas.addEventListener('mousemove', function (e) {
-    var mousePos = calculateMousePosition(e);
-    paddle1Y = mousePos.y - (PADDLE_HEIGHT/2);
-  });
+  canvas.addEventListener('mousemove', handleMouseMovement);
 
   window.addEventListener('keydown', function (e) {
-    console.log('this', e);
     if (e.keyCode === 32) {
-      ballSpeedX = randomBallDirection();
-      ballSpeedY = randomBallDirection();
+      if (chaosCount > 0) {
+        ballSpeedX = randomBallDirection(true);
+        ballSpeedY = randomBallDirection(true);
+        chaosCount--;
+      }
     };
   });
 };
@@ -70,11 +76,13 @@ function ballReset() {
   ballY = canvas.height/2;
   ballSpeedX = randomBallDirection();
   ballSpeedY = randomBallDirection();
+  chaosCount = INITIAL_CHAOS_COUNT;
 }
 
-function randomBallDirection() {
-  var final = Math.round(Math.random()) ? getRandomInt(4, 7) : -getRandomInt(4, 7);
-  console.log('final', final);
+function randomBallDirection(chaos) {
+  const min = chaos ? 7 : 4;
+  const max = chaos ? 12 : 7;
+  var final = Math.round(Math.random()) ? getRandomInt(min, max) : -getRandomInt(min, max);
   return final;
 }
 
