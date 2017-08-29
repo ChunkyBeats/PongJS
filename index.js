@@ -80,8 +80,8 @@ function ballReset() {
 }
 
 function randomBallDirection(chaos) {
-  const min = chaos ? 7 : 4;
-  const max = chaos ? 12 : 7;
+  const min = chaos ? 8 : 4;
+  const max = chaos ? 14 : 7;
   var final = Math.round(Math.random()) ? getRandomInt(min, max) : -getRandomInt(min, max);
   return final;
 }
